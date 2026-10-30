@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IndusTech - Sistema Integrado de Gestão Industrial</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#111827', cardBg: '#1F2937', accentBlue: '#3B82F6',
+                        accentGreen: '#22C55E', accentYellow: '#F59E0B', accentRed: '#EF4444'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-darkBg text-gray-100 min-h-screen flex">
+
+    <!-- TELA DE LOGIN -->
+    <div id="telaLogin" class="fixed inset-0 bg-darkBg flex items-center justify-center z-50">
+        <div class="bg-cardBg p-8 rounded-xl border border-gray-700 w-full max-w-md shadow-2xl">
+            <div class="flex justify-center mb-6">
+                <div class="w-12 h-12 bg-accentBlue rounded-xl flex items-center justify-center text-xl font-bold text-white">IT</div>
+            </div>
+            <h2 class="text-2xl font-bold text-center text-white mb-2">IndusTech</h2>
+            <p class="text-sm text-gray-400 text-center mb-6">Plataforma Integrada de Inteligência Industrial</p>
+            
+            <form onsubmit="fazerLogin(event)" class="space-y-4">
+                <div><label class="block text-sm text-gray-300 mb-1">E-mail</label><input type="email" id="loginEmail" required value="admin@industech.com" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2.5 text-white"></div>
+                <div><label class="block text-sm text-gray-300 mb-1">Senha</label><input type="password" id="loginSenha" required value="admin123" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2.5 text-white"></div>
+                <button type="submit" class="w-full bg-accentBlue hover:bg-blue-600 text-white font-medium py-2.5 rounded-lg transition shadow">Entrar na Plataforma</button>
+            </form>
+            <p class="text-xs text-gray-500 text-center mt-4">Login Padrão: admin@industech.com | Senha: admin123</p>
+        </div>
+    </div>
+
+    <!-- PAINEL PRINCIPAL DO SISTEMA -->
+    <div id="appSistema" class="flex w-full hidden">
+        <!-- Sidebar com os 12 Módulos Solicitados -->
+        <aside class="w-64 bg-cardBg border-r border-gray-700 p-4 flex flex-col justify-between">
+            <div>
+                <div class="flex items-center space-x-3 mb-6 px-2">
+                    <div class="w-8 h-8 bg-accentBlue rounded-lg flex items-center justify-center font-bold text-white">IT</div>
+                    <h1 class="text-xl font-bold text-white tracking-wide">IndusTech</h1>
+                </div>
+                
+                <nav class="space-y-1 text-sm overflow-y-auto max-h-[calc(100vh-140px)] pr-1">
+                    <button onclick="mudarModulo('dashboard')" id="btn-dashboard" class="w-full flex items-center space-x-3 px-3 py-2 bg-accentBlue text-white rounded-lg font-medium transition"><span>📊</span><span>1. Visão Geral</span></button>
+                    <button onclick="mudarModulo('producao')" id="btn-producao" class="w-full flex items-center space-x-3 px-3 py-2 text-gray-400 hover:bg-gray-800 rounded-lg transition"><span>⚙️</span><span>2. Produção</span></button>
+                    <button onclick="mudarModulo('manutencao')" id="btn-manutencao" class="w-full flex items-center space-x-3 px-3 py-2 text-gray-400 hover:bg-gray-800 rounded-lg transition"><span>🔧</span><span>3. Manutenção</span></button>
+                    <button onclick="mudarModulo('qualidade')" id="btn-qualidade" class="w-full flex items-center space-x-3 px-3 py-2 text-gray-400 hover:bg-gray-800 rounded-lg transition"><span>✅</span><span>4. Qualidade</span></button>
+                    <button onclick="mudarModulo('estoque')" id="btn-estoque" class="w-full flex items-center space-x-3 px-3 py-2 text-gray-400 hover:bg-gray-800 rounded-lg transition"><span>📦</span><span>5. Estoque</span></button>
+                    <button onclick="mudarModulo('desperdicios')" id="btn-desperdicios" class="w-full flex items-center space-x-3 px-3 py-2 text-gray-400 hover:bg-gray-800 rounded-lg transition"><span>♻️</span><span>6. Desperdícios</span></button>
+                    <button onclick="mudarModulo('energia')" id="btn-energia" class="w-full flex items-center space-x-3 px-3 py-2 text-gray-400 hover:bg-gray-800 rounded-lg transition"><span>⚡</span><span>7. Energia</span></button>
+                    <button onclick="mudarModulo('logistica')" id="btn-logistica" class="w-full flex items-center space-x-3 px-3 py-2 text-gray-400 hover:bg-gray-800 rounded-lg transition"><span>🚚</span><span>8. Logística</span></button>
+                    <button onclick="mudarModulo('rastreabilidade')" id="btn-rastreabilidade" class="w-full flex items-center space-x-3 px-3 py-2 text-gray-400 hover:bg-gray-800 rounded-lg transition"><span>🔍</span><span>9. Rastreabilidade</span></button>
+                    <button onclick="mudarModulo('funcionarios')" id="btn-funcionarios" class="w-full flex items-center space-x-3 px-3 py-2 text-gray-400 hover:bg-gray-800 rounded-lg transition"><span>👥</span><span>10. Funcionários</span></button>
+                    <button onclick="mudarModulo('seguranca')" id="btn-seguranca" class="w-full flex items-center space-x-3 px-3 py-2 text-gray-400 hover:bg-gray-800 rounded-lg transition"><span>🛡️</span><span>11. Segurança</span></button>
+                    <button onclick="mudarModulo('relatorios')" id="btn-relatorios" class="w-full flex items-center space-x-3 px-3 py-2 text-gray-400 hover:bg-gray-800 rounded-lg transition"><span>📈</span><span>12. Relatórios</span></button>
+                </nav>
+            </div>
+
+            <div class="border-t border-gray-700 pt-3 flex justify-between items-center text-xs text-gray-400">
+                <span id="nomeUsuarioLogado">Admin</span>
+                <button onclick="sair()" class="text-accentRed hover:underline">Sair 🚪</button>
+            </div>
+        </aside>
+
+        <!-- Área Central -->
+        <main class="flex-1 p-8 overflow-y-auto">
+            <header class="mb-6 flex justify-between items-center">
+                <div>
+                    <h2 id="tituloModulo" class="text-2xl font-bold text-white">Dashboard — Visão Geral</h2>
+                    <p id="subtituloModulo" class="text-gray-400 text-sm">Resumo dos indicadores operacionais da indústria.</p>
+                </div>
+            </header>
+
+            <!-- 1. DASHBOARD -->
+            <section id="secao-dashboard" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div class="bg-cardBg p-4 rounded-xl border border-gray-700"><p class="text-xs text-gray-400 font-semibold uppercase">Ordens de Produção</p><h3 id="kpiOps" class="text-2xl font-bold text-white mt-1">0</h3></div>
+                    <div class="bg-cardBg p-4 rounded-xl border border-gray-700"><p class="text-xs text-gray-400 font-semibold uppercase">Estoque Crítico</p><h3 id="kpiEstoqueBaixo" class="text-2xl font-bold text-accentYellow mt-1">0</h3></div>
+                    <div class="bg-cardBg p-4 rounded-xl border border-gray-700"><p class="text-xs text-gray-400 font-semibold uppercase">Manutenção Pendente</p><h3 id="kpiMaquinasManut" class="text-2xl font-bold text-accentRed mt-1">0</h3></div>
+                    <div class="bg-cardBg p-4 rounded-xl border border-gray-700"><p class="text-xs text-gray-400 font-semibold uppercase">Entregas Aguardando</p><h3 id="kpiPedLogistica" class="text-2xl font-bold text-accentBlue mt-1">0</h3></div>
+                </div>
+            </section>
+
+            <!-- 2. PRODUÇÃO -->
+            <section id="secao-producao" class="space-y-6 hidden">
+                <div class="bg-cardBg p-6 rounded-xl border border-gray-700 max-w-2xl">
+                    <h3 class="text-lg font-semibold mb-4">Nova Ordem de Produção (Produz+)</h3>
+                    <form onsubmit="salvarGeneric(event, 'producao')" class="space-y-4">
+                        <input type="text" id="prod_produto_nome" required placeholder="Nome do Produto" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2.5 text-white">
+                        <select id="prod_material_id" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2.5 text-white"><option value="">Selecione o Material do Estoque para Baixa</option></select>
+                        <input type="number" id="prod_quantidade_planejada" required placeholder="Quantidade Planejada" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2.5 text-white">
+                        <button type="submit" class="bg-accentBlue text-white font-medium px-5 py-2.5 rounded-lg">Cadastrar Ordem</button>
+                    </form>
+                </div>
+                <div class="bg-cardBg rounded-xl border border-gray-700 overflow-hidden"><table class="w-full text-left text-sm text-gray-300"><thead class="bg-gray-800 text-gray-400"><tr><th class="p-4">Código</th><th class="p-4">Produto</th><th class="p-4">Material Utilizado</th><th class="p-4">Qtd Planejada</th><th class="p-4">Status</th></tr></thead><tbody id="tb-producao" class="divide-y divide-gray-700"></tbody></table></div>
+            </section>
+
+            <!-- 3. MANUTENÇÃO -->
+            <section id="secao-manutencao" class="space-y-6 hidden">
+                <div class="bg-cardBg p-6 rounded-xl border border-gray-700 max-w-2xl">
+                    <h3 class="text-lg font-semibold mb-4">Gestão de Equipamentos (ManutControl)</h3>
+                    <form onsubmit="salvarGeneric(event, 'manutencao')" class="space-y-4">
+                        <input type="text" id="manut_nome" required placeholder="Nome da Máquina" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2.5 text-white">
+                        <input type="text" id="manut_setor" required placeholder="Setor de Alocação" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2.5 text-white">
+                        <select id="manut_status" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2.5 text-white"><option value="Operacional">🟢 Operacional</option><option value="Atenção">🟡 Requer Atenção</option><option value="Em Manutenção">🔴 Em Manutenção</option></select>
+                        <button type="submit" class="bg-accentBlue text-white font-medium px-5 py-2.5 rounded-lg">Cadastrar Máquina</button>
+                    </form>
+                </div>
+                <div class="bg-cardBg rounded-xl border border-gray-700 overflow-hidden"><table class="w-full text-left text-sm text-gray-300"><thead class="bg-gray-800 text-gray-400"><tr><th class="p-4">Código</th><th class="p-4">Máquina</th><th class="p-4">Setor</th><th class="p-4">Status</th></tr></thead><tbody id="tb-manutencao" class="divide-y divide-gray-700"></tbody></table></div>
+            </section>
+
+            <!-- 4. QUALIDADE -->
+            <section id="secao-qualidade" class="space-y-6 hidden">
+                <div class="bg-cardBg p-6 rounded-xl border border-gray-700 max-w-2xl">
+                    <h3 class="text-lg font-semibold mb-4">Inspeção de Qualidade (QualiCheck)</h3>
+                    <form onsubmit="salvarGeneric(event, 'qualidade')" class="space-y-4">
+                        <input type="text" id="qual_produto" required placeholder="Produto Inspecionado" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2.5 text-white">
+                        <div class="grid grid-cols-2 gap-4">
+                            <input type="number" id="qual_aprovados" required placeholder="Qtd Aprovada" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2.5 text-white">
+                            <input type="number" id="qual_reprovados" required placeholder="Qtd Reprovada" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2.5 text-white">
+                        </div>
+                        <input type="text" id="qual_defeito" placeholder="Descrição do Defeito" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2.5 text-white">
+                        <button type="submit" class="bg-accentBlue text-white font-medium px-5 py-2.5 rounded-lg">Registrar Inspeção</button>
+                    </form>
+                </div>
+                <div class="bg-cardBg rounded-xl border border-gray-700 overflow-hidden"><table class="w-full text-left text-sm text-gray-300"><thead class="bg-gray-800 text-gray-400"><tr><th class="p-4">Produto</th><th class="p-4">Aprovados</th><th class="p-4">Reprovados</th><th class="p-4">Defeito</th></tr></thead><tbody id="tb-qualidade" class="divide-y divide-gray-700"></tbody></table></div>
+            </section>
+
+            <!-- 5. ESTOQUE -->
+            <section id="secao-estoque" class="space-y-6 hidden">
+                <div class="bg-cardBg p-6 rounded-xl border border-gray-700 max-w-2xl">
+                    <h3 class="text-lg font-semibold mb-4">Controle de Estoque (StockIndustrial)</h3>
+                    <form onsubmit="salvarGeneric(event, 'estoque')" class="space-y-4">
+                        <input type="text" id="est_nome" required placeholder="Nome do Material" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2.5 text-white">
+                        <div class="grid grid-cols-3 gap-4">
+                            <input type="number" step="0.1" id="est_quantidade" required placeholder="Qtd Atual" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2.5 text-white">
+                            <input type="number" step="0.1" id="est_quantidade_minima" required placeholder="Qtd Mínima" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2.5 text-white">
+                            <select id="est_unidade" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2.5 text-white"><option value="Kg">Kg</option><option value="Unidades">Unidades</option><option value="Metros">Metros</option></select>
+                        </div>
+                        <button type="submit" class="bg-accentBlue text-white font-medium px-5 py-2.5 rounded-lg">Cadastrar Material</button>
+                    </form>
+                </div>
+                <div class="bg-cardBg rounded-xl border border-gray-700 overflow-hidden"><table class="w-full text-left text-sm text-gray-300"><thead class="bg-gray-800 text-gray-400"><tr><th class="p-4">Código</th><th class="p-4">Material</th><th class="p-4">Quantidade</th><th class="p-4">Mínimo</th><th class="p-4">Situação</th></tr></thead><tbody id="tb-estoque" class="divide-y divide-gray-700"></tbody></table></div>
+            </section>
+
+            <!-- 6. DESPERDÍCIOS -->
+            <section id="secao-desperdicios" class="space-y-6 hidden">
+                <div class="bg-cardBg p-6 rounded-xl border border-gray-700 max-w-2xl">
+                    <h3 class="text-lg font-semibold mb-4">Gestão de Desperdícios (EcoIndústria)</h3>
+                    <form onsubmit="salvarGeneric(event, 'desperdicios')" class="space-y-4">
+                        <input type="text" id="desp_material" required placeholder="Material Desperdiçado" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2.5 text-white">
+                        <div class="grid grid-cols-2 gap-4">
+                            <input type="number" step="0.1" id="desp_quantidade" required placeholder="Quantidade Perdida" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2.5 text-white">
+                            <input type="text" id="desp_etapa" required placeholder="Etapa do Processo" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2.5 text-white">
+                        </div>
+                        <input type="text" id="desp_motivo" required placeholder="Motivo da Perda" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2.5 text-white">
+                        <button type="submit" class="bg-accentBlue text-white font-medium px-5 py-2.5 rounded-lg">Registrar Perda</button>
+                    </form>
+                </div>
+                <div class="bg-cardBg rounded-xl border border-gray-700 overflow-hidden"><table class="w-full text-left text-sm text-gray-300"><thead class="bg-gray-800 text-gray-400"><tr><th class="p-4">Material</th><th class="p-4">Qtd Perdida</th><th class="p-4">Etapa</th><th class="p-4">Motivo</th></tr></thead><tbody id="tb-desperdicios" class="divide-y divide-gray-700"></tbody></table></div>
+            </section>
+
+            <!-- 7. ENERGIA -->
+            <section id="secao-energia" class="space-y-6 hidden">
+                <div class="bg-cardBg p-6 rounded-xl border border-gray-700 max-w-2xl">
+                    <h3 class="text-lg font-semibold mb-4">Gestão Energética (Energia Inteligente)</h3>
+                    <form onsubmit="salvarGeneric(event, 'energia')" class="space-y-4">
+                        <input type="text" id="ener_setor" required placeholder="Setor ou Máquina" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2.5 text-white">
+                        <input type="number" step="0.1" id="ener_kwh" required placeholder="Consumo Registrado (kWh)" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2.5 text-white">
+                        <button type="submit" class="bg-accentBlue text-white font-medium px-5 py-2.5 rounded-lg">Registrar Consumo</button>
+                    </form>
+                </div>
+                <div class="bg-cardBg rounded-xl border border-gray-700 overflow-hidden"><table class="w-full text-left text-sm text-gray-300"><thead class="bg-gray-800 text-gray-400"><tr><th class="p-4">Setor</th><th class="p-4">kWh</th><th class="p-4">Custo Est. (R$)</th><th class="p-4">Data</th></tr></thead><tbody id="tb-energia" class="divide-y divide-gray-700"></tbody></table></div>
+            </section>
+
+            <!-- 8. LOGÍSTICA -->
+            <section id="secao-logistica" class="space-y-6 hidden">
+                <div class="bg-cardBg p-6 rounded-xl border border-gray-700 max-w-2xl">
+                    <h3 class="text-lg font-semibold mb-4">Gestão Logística (LogiTrack)</h3>
+                    <form onsubmit="salvarGeneric(event, 'logistica')" class="space-y-4">
+                        <input type="text" id="log_cliente" required placeholder="Nome do Cliente" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2.5 text-white">
+                        <input type="text" id="log_destino" required placeholder="Cidade / Endereço de Entrega" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2.5 text-white">
+                        <button type="submit" class="bg-accentBlue text-white font-medium px-5 py-2.5 rounded-lg">Registrar Pedido</button>
+                    </form>
+                </div>
+                <div class="bg-cardBg rounded-xl border border-gray-700 overflow-hidden"><table class="w-full text-left text-sm text-gray-300"><thead class="bg-gray-800 text-gray-400"><tr><th class="p-4">Código Pedido</th><th class="p-4">Cliente</th><th class="p-4">Destino</th><th class="p-4">Status</th></tr></thead><tbody id="tb-logistica" class="divide-y divide-gray-700"></tbody></table></div>
+            </section>
+
+            <!-- 9. RASTREABILIDADE -->
+            <section id="secao-rastreabilidade" class="space-y-6 hidden">
+                <div class="bg-cardBg p-6 rounded-xl border border-gray-700 max-w-2xl">
+                    <h3 class="text-lg font-semibold mb-4">Rastreabilidade de Lotes (Rastreia)</h3>
+                    <form onsubmit="salvarGeneric(event, 'rastreabilidade')" class="space-y-4">
+                        <input type="text" id="rast_produto" required placeholder="Produto do Lote" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2.5 text-white">
+                        <input type="text" id="rast_etapa_atual" required placeholder="Etapa Atual (Ex: Usinagem)" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2.5 text-white">
+                        <button type="submit" class="bg-accentBlue text-white font-medium px-5 py-2.5 rounded-lg">Criar Lote</button>
+                    </form>
+                </div>
+                <div class="bg-cardBg rounded-xl border border-gray-700 overflow-hidden"><table class="w-full text-left text-sm text-gray-300"><thead class="bg-gray-800 text-gray-400"><tr><th class="p-4">Nº Lote</th><th class="p-4">Produto</th><th class="p-4">Etapa Atual</th><th class="p-4">Data</th></tr></thead><tbody id="tb-rastreabilidade" class="divide-y divide-gray-700"></tbody></table></div>
+            </section>
+
+            <!-- 10. FUNCIONÁRIOS -->
+            <section id="secao-funcionarios" class="space-y-6 hidden">
+                <div class="bg-cardBg p-6 rounded-xl border border-gray-700 max-w-2xl">
+                    <h3 class="text-lg font-semibold mb-4">Funcionários e Escalas (TurnoCerto)</h3>
+                    <form onsubmit="salvarGeneric(event, 'funcionarios')" class="space-y-4">
+                        <input type="text" id="func_nome" required placeholder="Nome do Funcionário" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2.5 text-white">
+                        <div class="grid grid-cols-2 gap-4">
+                            <input type="text" id="func_cargo" required placeholder="Cargo" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2.5 text-white">
+                            <input type="text" id="func_setor" required placeholder="Setor" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2.5 text-white">
+                        </div>
+                        <select id="func_turno" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2.5 text-white"><option value="Manhã (06h - 14h)">Manhã (06h - 14h)</option><option value="Tarde (14h - 22h)">Tarde (14h - 22h)</option><option value="Noite (22h - 06h)">Noite (22h - 06h)</option></select>
+                        <button type="submit" class="bg-accentBlue text-white font-medium px-5 py-2.5 rounded-lg">Cadastrar Funcionário</button>
+                    </form>
+                </div>
+                <div class="bg-cardBg rounded-xl border border-gray-700 overflow-hidden"><table class="w-full text-left text-sm text-gray-300"><thead class="bg-gray-800 text-gray-400"><tr><th class="p-4">Nome</th><th class="p-4">Cargo</th><th class="p-4">Setor</th><th class="p-4">Turno Escala</th></tr></thead><tbody id="tb-funcionarios" class="divide-y divide-gray-700"></tbody></table></div>
+            </section>
+
+            <!-- 11. SEGURANÇA -->
+            <section id="secao-seguranca" class="space-y-6 hidden">
+                <div class="bg-cardBg p-6 rounded-xl border border-gray-700 max-w-2xl">
+                    <h3 class="text-lg font-semibold mb-4">Segurança e Inspeções (Segurança Ativa)</h3>
+                    <form onsubmit="salvarGeneric(event, 'seguranca')" class="space-y-4">
+                        <input type="text" id="seg_descricao" required placeholder="Descrição da Ocorrência/Risco" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2.5 text-white">
+                        <input type="text" id="seg_setor" required placeholder="Setor Local" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2.5 text-white">
+                        <select id="seg_gravidade" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2.5 text-white"><option value="Baixa">🟢 Gravidade Baixa</option><option value="Média">🟡 Gravidade Média</option><option value="Alta">🔴 Gravidade Alta / Crítica</option></select>
+                        <button type="submit" class="bg-accentBlue text-white font-medium px-5 py-2.5 rounded-lg">Registrar Ocorrência</button>
+                    </form>
+                </div>
+                <div class="bg-cardBg rounded-xl border border-gray-700 overflow-hidden"><table class="w-full text-left text-sm text-gray-300"><thead class="bg-gray-800 text-gray-400"><tr><th class="p-4">Descrição</th><th class="p-4">Setor</th><th class="p-4">Gravidade</th><th class="p-4">Status</th></tr></thead><tbody id="tb-seguranca" class="divide-y divide-gray-700"></tbody></table></div>
+            </section>
+
+            <!-- 12. RELATÓRIOS -->
+            <section id="secao-relatorios" class="space-y-6 hidden">
+                <div class="bg-cardBg p-6 rounded-xl border border-gray-700 text-center py-12">
+                    <h3 class="text-xl font-bold mb-2">Central de Relatórios Integrados</h3>
+                    <p class="text-gray-400 text-sm mb-6 max-w-lg mx-auto">Exporte consolidados executivos contendo dados de Produção, Manutenção, Consumo Energético e Qualidade em formato padronizado.</p>
+                    <button onclick="alert('Exportando relatório consolidado do banco de dados...')" class="bg-accentGreen hover:bg-green-600 text-white font-bold px-6 py-3 rounded-lg shadow transition">📥 Baixar Relatório Consolidado (CSV/PDF)</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        const API = 'https://industech-api.onrender.com/api';
+
+        async function fazerLogin(e) {
+            e.preventDefault();
+            const res = await fetch(`${API}/login`, {
+                method: 'POST', headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ email: document.getElementById('loginEmail').value, senha: document.getElementById('loginSenha').value })
+            });
+            if(res.ok) {
+                const data = await res.json();
+                document.getElementById('nomeUsuarioLogado').innerText = data.usuario;
+                document.getElementById('telaLogin').classList.add('hidden');
+                document.getElementById('appSistema').classList.remove('hidden');
+                mudarModulo('dashboard');
+            } else { alert('E-mail ou Senha incorretos!'); }
+        }
+
+        function sair() {
+            document.getElementById('appSistema').classList.add('hidden');
+            document.getElementById('telaLogin').classList.remove('hidden');
+        }
+
+        function mudarModulo(mod) {
+            const modulos = ['dashboard','producao','manutencao','qualidade','estoque','desperdicios','energia','logistica','rastreabilidade','funcionarios','seguranca','relatorios'];
+            modulos.forEach(m => {
+                document.getElementById(`secao-${m}`).classList.add('hidden');
+                document.getElementById(`btn-${m}`).className = 'w-full flex items-center space-x-3 px-3 py-2 text-gray-400 hover:bg-gray-800 rounded-lg transition';
+            });
+            document.getElementById(`secao-${mod}`).classList.remove('hidden');
+            document.getElementById(`btn-${mod}`).className = 'w-full flex items-center space-x-3 px-3 py-2 bg-accentBlue text-white rounded-lg font-medium transition';
+
+            const titulos = {
+                dashboard: 'Dashboard — Visão Geral', producao: 'Módulo 1 — Gestão de Produção (Produz+)', manutencao: 'Módulo 2 — Gestão de Manutenção (ManutControl)',
+                qualidade: 'Módulo 3 — Controle de Qualidade (QualiCheck)', estoque: 'Módulo 4 — Controle de Estoque (StockIndustrial)', desperdicios: 'Módulo 5 — Gestão de Desperdícios (EcoIndústria)',
+                energia: 'Módulo 6 — Gestão Energética (Energia Inteligente)', logistica: 'Módulo 7 — Gestão Logística (LogiTrack)', rastreabilidade: 'Módulo 8 — Rastreabilidade (Rastreia)',
+                funcionarios: 'Módulo 9 — Funcionários e Turnos (TurnoCerto)', seguranca: 'Módulo 10 — Segurança e Inspeções (Segurança Ativa)', relatorios: 'Módulo 12 — Relatórios e Análises'
+            };
+            document.getElementById('tituloModulo').innerText = titulos[mod];
+
+            if(mod === 'dashboard') carregarDashboard();
+            else carregarModulo(mod);
+        }
+
+        async function carregarDashboard() {
+            const res = await fetch(`${API}/dashboard`);
+            const d = await res.json();
+            document.getElementById('kpiOps').innerText = d.kpis.total_ops;
+            document.getElementById('kpiEstoqueBaixo').innerText = d.kpis.estoque_baixo;
+            document.getElementById('kpiMaquinasManut').innerText = d.kpis.maquinas_manut;
+            document.getElementById('kpiPedLogistica').innerText = d.kpis.pedidos_pendentes;
+        }
+
+        async function carregarModulo(mod) {
+            if(mod === 'producao') {
+                const resE = await fetch(`${API}/estoque`);
+                const est = await resE.json();
+                document.getElementById('prod_material_id').innerHTML = '<option value="">Selecione o Material do Estoque para Baixa</option>' + est.map(e => `<option value="${e.id}">${e.nome} (Qtd: ${e.quantidade})</option>`).join('');
+            }
+
+            const res = await fetch(`${API}/${mod}`);
+            const dados = await res.json();
+            const tb = document.getElementById(`tb-${mod}`);
+
+            if(dados.length === 0) { tb.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-gray-500">Nenhum registro encontrado.</td></tr>`; return; }
+
+            tb.innerHTML = dados.map(item => {
+                if(mod === 'producao') return `<tr><td class="p-4 text-accentBlue font-mono">${item.codigo_op}</td><td class="p-4 font-bold text-white">${item.produto_nome}</td><td class="p-4">${item.material_utilizado}</td><td class="p-4">${item.quantidade_planejada} un</td><td class="p-4"><span class="px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded">${item.status}</span></td></tr>`;
+                if(mod === 'manutencao') return `<tr><td class="p-4 text-gray-400 font-mono">${item.codigo}</td><td class="p-4 font-bold text-white">${item.nome}</td><td class="p-4">${item.setor}</td><td class="p-4 font-semibold">${item.status}</td></tr>`;
+                if(mod === 'qualidade') return `<tr><td class="p-4 font-bold text-white">${item.produto}</td><td class="p-4 text-green-400 font-bold">${item.aprovados}</td><td class="p-4 text-red-400 font-bold">${item.reprovados}</td><td class="p-4 text-gray-300">${item.defeito}</td></tr>`;
+                if(mod === 'estoque') return `<tr><td class="p-4 text-gray-400 font-mono">${item.codigo}</td><td class="p-4 font-bold text-white">${item.nome}</td><td class="p-4 font-bold">${item.quantidade} ${item.unidade}</td><td class="p-4 text-gray-400">${item.quantidade_minima} ${item.unidade}</td><td class="p-4"><span class="px-2 py-1 ${item.status==='OK'?'bg-green-500/20 text-green-400':'bg-red-500/20 text-red-400'} text-xs rounded font-bold">${item.status}</span></td></tr>`;
+                if(mod === 'desperdicios') return `<tr><td class="p-4 font-bold text-white">${item.material}</td><td class="p-4 text-accentYellow font-bold">${item.quantidade}</td><td class="p-4">${item.etapa}</td><td class="p-4 text-gray-300">${item.motivo}</td></tr>`;
+                if(mod === 'energia') return `<tr><td class="p-4 font-bold text-white">${item.setor}</td><td class="p-4 font-bold text-accentBlue">${item.kwh} kWh</td><td class="p-4 text-green-400">R$ ${item.custo_estimado.toFixed(2)}</td><td class="p-4 text-gray-400">${item.data}</td></tr>`;
+                if(mod === 'logistica') return `<tr><td class="p-4 font-mono text-accentBlue">${item.codigo_pedido}</td><td class="p-4 font-bold text-white">${item.cliente}</td><td class="p-4">${item.destino}</td><td class="p-4"><span class="px-2 py-1 bg-blue-500/20 text-blue-400 text-xs rounded">${item.status}</span></td></tr>`;
+                if(mod === 'rastreabilidade') return `<tr><td class="p-4 font-mono text-accentBlue">${item.numero_lote}</td><td class="p-4 font-bold text-white">${item.produto}</td><td class="p-4 font-bold text-accentGreen">${item.etapa_atual}</td><td class="p-4 text-gray-400">${item.data}</td></tr>`;
+                if(mod === 'funcionarios') return `<tr><td class="p-4 font-bold text-white">${item.nome}</td><td class="p-4">${item.cargo}</td><td class="p-4">${item.setor}</td><td class="p-4 font-semibold text-accentBlue">${item.turno}</td></tr>`;
+                if(mod === 'seguranca') return `<tr><td class="p-4 font-bold text-white">${item.descricao}</td><td class="p-4">${item.setor}</td><td class="p-4 font-bold text-accentRed">${item.gravidade}</td><td class="p-4"><span class="px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded">${item.status}</span></td></tr>`;
+            }).join('');
+        }
+
+        async function salvarGeneric(e, mod) {
+            e.preventDefault();
+            const payload = {};
+            const inputs = document.querySelectorAll(`[id^="${mod.substring(0,4)}_"]`);
+            inputs.forEach(inp => {
+                const key = inp.id.replace(`${mod.substring(0,4)}_`, '');
+                payload[key] = inp.value;
+            });
+
+            await fetch(`${API}/${mod}`, {
+                method: 'POST', headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(payload)
+            });
+
+            inputs.forEach(inp => inp.value = '');
+            carregarModulo(mod);
+        }
+    </script>
+</body>
+</html>
